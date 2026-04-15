@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connecticut Fish ID Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #0d2137;
+      background-image: radial-gradient(ellipse at 20% 50%, #0f3554 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, #0a2940 0%, transparent 50%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Source Sans 3', sans-serif;
+      color: #e8dfc8;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #f0e6c8;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      color: #8ab4c8;
+      margin-top: 0.4rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    #game-container {
+      width: 100%;
+      max-width: 580px;
+    }
+
+    #hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0.6rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    #score-display {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: #f0c96b;
+    }
+
+    #progress-display {
+      font-size: 0.85rem;
+      color: #8ab4c8;
+      letter-spacing: 0.04em;
+    }
+
+    #fish-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+    }
+
+    #fish-img-wrap {
+      width: 100%;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    #fish-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: opacity 0.3s ease;
+    }
+
+    #options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .opt-btn {
+      padding: 14px 10px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.07);
+      color: #e8dfc8;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+
+    .opt-btn:hover:not(:disabled) {
+      background: rgba(255,255,255,0.13);
+      border-color: rgba(255,255,255,0.3);
+      transform: translateY(-1px);
+    }
+
+    .opt-btn:disabled { cursor: default; transform: none; }
+
+    .opt-btn.correct {
+      background: rgba(80, 180, 100, 0.25);
+      border-color: #50b464;
+      color: #a8f0b4;
+    }
+
+    .opt-btn.wrong {
+      background: rgba(200, 60, 60, 0.25);
+      border-color: #c83c3c;
+      color: #f0a8a8;
+    }
+
+    #feedback {
+      text-align: center;
+      font-size: 1rem;
+      min-height: 24px;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
+    }
+
+    #feedback.correct { color: #7de88a; }
+    #feedback.wrong { color: #f08080; }
+
+    #next-btn {
+      display: none;
+      width: 100%;
+      padding: 13px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 10px;
+      border: 1px solid rgba(240, 200, 107, 0.4);
+      background: rgba(240, 200, 107, 0.1);
+      color: #f0c96b;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: background 0.15s;
+    }
+
+    #next-btn:hover { background: rgba(240, 200, 107, 0.2); }
+
+    #win-screen {
+      display: none;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    #win-screen .trophy {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    #win-screen h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #f0c96b;
+      margin-bottom: 0.75rem;
+    }
+
+    #win-screen p {
+      font-size: 1.05rem;
+      color: #8ab4c8;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    #play-again {
+      padding: 13px 36px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 10px;
+      border: 1px solid rgba(240, 200, 107, 0.5);
+      background: rgba(240, 200, 107, 0.12);
+      color: #f0c96b;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: background 0.15s;
+    }
+
+    #play-again:hover { background: rgba(240, 200, 107, 0.25); }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(to right, transparent, #f0c96b, transparent);
+      margin: 0.6rem auto 1rem;
+    }
+  </style>
+  <link rel="stylesheet" href="css/myStyles.css">
+</head>
+<body class="backround1">
+    <nav class="location3">
+        <a class="buttons2 name" href="index.html">
+            Michael Latauska
+        </a>
+            <ul class="location1">
+                <li><a class="buttons2" href="index.html">Home</a></li>
+                <li><a class="buttons2" href="education.html">Education</a></li>
+                <li><a class="buttons2" href="experience.html">Experience</a></li>
+                <li><a class="buttons2" href="skills.html">Skills</a></li>
+                <li><a class="buttons2" href="scratch.html">Scratch</a></li>
+                <li><a class="buttons2" href="contact.html">Contact</a></li>
+            </ul>
+    </nav>
+
+  <header>
+    <h1>Connecticut Fish ID</h1>
+    <div class="divider"></div>
+    <p>Can you identify these freshwater species?</p>
+  </header>
+
+  <div id="game-container">
+    <div id="hud">
+      <span id="score-display">Score: 0 / 5</span>
+      <span id="progress-display">Question 1 of 5</span>
+    </div>
+
+    <div id="fish-card">
+      <div id="fish-img-wrap">
+        <img id="fish-img" src="" alt="Identify this fish" />
+      </div>
+    </div>
+
+    <div id="options"></div>
+    <div id="feedback"></div>
+    <button id="next-btn">Next Fish &rarr;</button>
+
+    <div id="win-screen">
+      <div class="trophy">🎣</div>
+      <h2>Nice Catch!</h2>
+      <p id="win-msg"></p>
+      <button id="play-again">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const fish = [
+      { name: "Largemouth Bass", img: "assets/img/largemouth.jpg" },
+      { name: "Smallmouth Bass", img: "assets/img/smallmouth.jpg" },
+      { name: "Black Crappie",   img: "assets/img/black-crappie.jpg" },
+      { name: "Chain Pickerel",  img: "assets/img/chainpickerel.png" },
+      { name: "Yellow Perch",    img: "assets/img/yellowperch.jpg" }
+    ];
+
+    let order = [], current = 0, score = 0, answered = false;
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function startGame() {
+      order = shuffle([0, 1, 2, 3, 4]);
+      current = 0;
+      score = 0;
+      answered = false;
+      document.getElementById('win-screen').style.display = 'none';
+      document.getElementById('hud').style.display = 'flex';
+      document.getElementById('fish-card').style.display = 'block';
+      document.getElementById('options').style.display = 'grid';
+      document.getElementById('feedback').textContent = '';
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      answered = false;
+      const idx = order[current];
+      const correct = fish[idx];
+
+      const img = document.getElementById('fish-img');
+      img.style.opacity = '0';
+      img.src = correct.img;
+      img.onload = () => { img.style.opacity = '1'; };
+
+      document.getElementById('score-display').textContent = `Score: ${score} / 5`;
+      document.getElementById('progress-display').textContent = `Question ${current + 1} of 5`;
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('feedback').className = '';
+      document.getElementById('next-btn').style.display = 'none';
+
+      const others = fish.filter((_, i) => i !== idx);
+      const distractors = shuffle(others).slice(0, 3).map(f => f.name);
+      const choices = shuffle([correct.name, ...distractors]);
+
+      const optDiv = document.getElementById('options');
+      optDiv.innerHTML = '';
+      choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = choice;
+        btn.onclick = () => handleAnswer(choice, correct.name);
+        optDiv.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(chosen, correct) {
+      if (answered) return;
+      answered = true;
+
+      document.querySelectorAll('.opt-btn').forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === correct) btn.classList.add('correct');
+        else if (btn.textContent === chosen) btn.classList.add('wrong');
+      });
+
+      const fb = document.getElementById('feedback');
+      if (chosen === correct) {
+        score++;
+        fb.textContent = 'Correct!';
+        fb.className = 'correct';
+      } else {
+        fb.textContent = `Not quite — that's a ${correct}.`;
+        fb.className = 'wrong';
+      }
+
+      document.getElementById('score-display').textContent = `Score: ${score} / 5`;
+      current++;
+
+      if (current >= 5) {
+        setTimeout(showWin, 1000);
+      } else {
+        document.getElementById('next-btn').style.display = 'block';
+      }
+    }
+
+    function showWin() {
+      document.getElementById('fish-card').style.display = 'none';
+      document.getElementById('options').style.display = 'none';
+      document.getElementById('feedback').textContent = '';
+      document.getElementById('next-btn').style.display = 'none';
+      document.getElementById('hud').style.display = 'none';
+      const ws = document.getElementById('win-screen');
+      ws.style.display = 'block';
+      const msgs = [
+        `You correctly identified ${score} out of 5 Connecticut freshwater fish.`,
+      ];
+      if (score === 5) msgs[0] = "Perfect score! You know your Connecticut fish inside and out.";
+      else if (score >= 3) msgs[0] = `You got ${score} out of 5 — solid fishing knowledge!`;
+      else msgs[0] = `You got ${score} out of 5. Hit play again and study up!`;
+      document.getElementById('win-msg').textContent = msgs[0];
+    }
+
+    document.getElementById('next-btn').onclick = loadQuestion;
+    document.getElementById('play-again').onclick = startGame;
+
+    startGame();
+  </script>
+</body>
+</html>

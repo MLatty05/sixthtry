@@ -1,0 +1,111 @@
+.font {
+    font-size: 30px;
+    color: black;
+}
+
+.backround {
+    background-color: lightcoral;
+}
+
+.buttons{
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    font-size: 16px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    
+    text-transform: uppercase;
+}
+
+.bullet {
+    list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.location1 {
+    display: flex;
+  gap: 30px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.location2 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 110px;
+    background-color: lightcoral;
+    box-sizing: border-box;
+}
+
+.name {
+    font-size: 22px;
+}
+
+.smallerpic {
+    width: 200px;
+    padding-left: 90px;
+}
+
+.nobullet {
+    list-style: none;
+}
+
+.backround1 {
+    background-image: radial-gradient(ellipse at 20% 50%, #0f3554 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, #0a2940 0%, transparent 50%);;
+}
+
+.location3 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 110px;
+    background-image: radial-gradient(ellipse at 20% 50%, #0f3554 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, #0a2940 0%, transparent 50%);;
+    box-sizing: border-box;
+}
+
+.buttons2{
+    color: white;
+    text-decoration: none;
+    list-style: none;
+    font-size: 16px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    
+    text-transform: uppercase;
+}
+
+.buttons3{
+    color: black;
+    text-decoration: none;
+    list-style: none;
+    font-size: 22px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-transform: uppercase;
+    border: 2px solid black;
+    padding: 12px 20px;     /* more space = bigger button */         
+    display: inline-block;
+    border-radius: 6px;
+    background-color: white;
+    position: relative;
+    top: -45px;   /* moves up */
+    left: 900px;  /* moves left */
+}
+
+
+.boldy {
+    font-weight: bold;
+}
